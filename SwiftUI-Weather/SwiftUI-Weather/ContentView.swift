@@ -8,12 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State private var isNight = false
+    
     var body: some View {
         ZStack {
-            BackgroundView(topColor: .blue, bottomColor: Color("Colors/lightBlue"))
+            BackgroundView(isNight: isNight)
             VStack {
                 CityTextView(cityName: "Cupertino, CA")
-                MainWeatherStatusView(imageName: "cloud.sun.fill", temperature: 76)
+                MainWeatherStatusView(imageName: isNight ? "moon.stars.fill" : "cloud.sun.fill", temperature: 76)
                 
                 HStack(spacing: 20) {
                     WeatherDayView(dayOfWeek: "TUE", imageName: "cloud.sun.fill", temperature: 74)
@@ -26,7 +29,7 @@ struct ContentView: View {
                 Spacer()
                 
                 Button {
-                    print("tapped")
+                    isNight.toggle()
                 } label: {
                     WeatherButton(title: "Change Day Time", textColor: .blue, backgroundColor: .white)
                 }
@@ -53,7 +56,7 @@ struct WeatherDayView: View {
                 .font(.system(size: 16, weight: .medium))
                 .foregroundStyle(.white)
             Image(systemName: imageName)
-                .renderingMode(.original)
+                .symbolRenderingMode(.multicolor)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 40, height: 40)
@@ -66,15 +69,14 @@ struct WeatherDayView: View {
 
 struct BackgroundView: View {
     
-    var topColor: Color
-    var bottomColor: Color
+    var isNight: Bool
     
     var body: some View {
         
-        LinearGradient(gradient: Gradient(colors: [topColor, bottomColor]),
+        LinearGradient(gradient: Gradient(colors: [isNight ? .black : .blue, isNight ? .gray : Color("Colors/lightBlue")]),
                        startPoint: .topLeading,
                        endPoint: .bottomTrailing)
-        .edgesIgnoringSafeArea(.all)
+        .ignoresSafeArea()
     }
 }
 
